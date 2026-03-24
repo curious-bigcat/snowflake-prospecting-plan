@@ -48,16 +48,93 @@ Exported as a Snowflake-branded PDF with cover page, styled tables, priority bad
     └── report.html                       # Snowflake-branded HTML/CSS template
 ```
 
-## Usage
+## How to Use
 
-Invoke the skill in Cortex Code with any of these triggers:
+### 1. Install the Skill
 
-- "Create a prospecting plan for [Company]"
-- "Account analysis for [Company]"
-- "Snowflake positioning for [Company]"
-- "Strategic prospecting for [Company]"
+Clone this repo into your project's `.cortex/skills/` directory:
 
-The skill will guide you through the research phases interactively, then generate the full report and offer PDF export.
+```bash
+# From your project root
+git clone https://github.com/curious-bigcat/snowflake-prospecting-plan.git \
+  .cortex/skills/snowflake-prospecting-plan
+```
+
+Or copy the `.cortex/skills/snowflake-prospecting-plan/` folder into your own project.
+
+For global installation (available across all projects):
+
+```bash
+git clone https://github.com/curious-bigcat/snowflake-prospecting-plan.git \
+  ~/.snowflake/cortex/skills/snowflake-prospecting-plan
+```
+
+### 2. Invoke the Skill
+
+Open [Cortex Code](https://docs.snowflake.com/en/user-guide/cortex-code/cortex-code) and use any of these prompts:
+
+```
+Create a prospecting plan for Acme Corp
+```
+```
+Account analysis for Netflix
+```
+```
+Snowflake positioning for Walmart
+```
+```
+Strategic prospecting for Deutsche Bank
+```
+
+### 3. Provide Account Details
+
+The skill will ask for:
+
+| Field | Required | Example |
+|-------|----------|---------|
+| Company name | Yes | "Acme Corp" |
+| Industry | Optional | "Retail", "Financial Services" |
+| Geography | Optional | "US - San Francisco" |
+| Known contacts | Optional | "Jane Doe - CTO" |
+| Snowflake relationship | Optional | "New prospect" / "Existing customer" |
+| Focus areas | Optional | "AI/ML adoption", "Data governance" |
+
+### 4. Research Phase (Automatic)
+
+After you confirm, the skill automatically runs web research across 8 dimensions:
+
+1. Financial & business profile
+2. Stakeholder & org mapping
+3. Digital, data & AI maturity assessment
+4. Technology stack discovery
+5. Competitive landscape analysis
+6. Market signals & external intelligence
+7. Risk & challenge identification
+8. Strategic initiative mapping
+
+Each phase uses targeted web searches and compiles findings internally.
+
+### 5. Review the Report
+
+The skill presents a 12-section text report. You can then:
+
+- **Export as PDF** — Generates a Snowflake-branded PDF in your working directory
+- **Deep-dive** into any section for more detail
+- **Refine** the use-case prioritization
+- **Save** as markdown
+- **Generate** a call prep brief for a specific stakeholder
+
+### 6. PDF Export
+
+When you choose PDF export, the skill:
+
+1. Assembles all research data into structured JSON
+2. Renders it through a Snowflake-branded HTML template
+3. Converts to PDF via WeasyPrint
+
+The output file is saved as `{company}_prospecting_plan.pdf` in your working directory.
+
+> **Note:** PDF generation requires Python 3.11+ and installs dependencies automatically via `uv run`.
 
 ## PDF Brand Theme
 
