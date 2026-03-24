@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ company_name }} — Snowflake Prospecting Plan</title>
+<style>
+  /* ============================================================
+     SNOWFLAKE INC BRAND THEME
+     Primary Blue: #29B5E8  (Snowflake Blue)
+     Dark Blue:    #11567F  (Headers / Dark accents)
+     Navy:         #0D2B45  (Cover page background)
+     Light Blue:   #E8F4FD  (Table alternating rows)
+     Accent:       #00A1D9  (Links / highlights)
+     Text Dark:    #1B2A3D
+     Text Light:   #FFFFFF
+     Border:       #B8D4E8
+     Background:   #F7FAFC
+     ============================================================ */
+
+  @page {
+    size: A4;
+    margin: 20mm 18mm 25mm 18mm;
+    @bottom-center {
+      content: "Confidential — Snowflake AI & Data Cloud";
+      font-size: 7pt;
+      color: #8899AA;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-size: 7pt;
+      color: #8899AA;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+  }
+
+  @page :first {
+    margin: 0;
+    @bottom-center { content: none; }
+    @bottom-right { content: none; }
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9.5pt;
+    line-height: 1.55;
+    color: #1B2A3D;
+    background: #FFFFFF;
+  }
+
+  /* ---- COVER PAGE ---- */
+  .cover-page {
+    page-break-after: always;
+    width: 210mm;
+    height: 297mm;
+    background: linear-gradient(160deg, #0D2B45 0%, #11567F 55%, #29B5E8 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40mm 30mm;
+    color: #FFFFFF;
+    position: relative;
+  }
+
+  .cover-page::before {
+    content: "";
+    position: absolute;
+    top: 0; right: 0;
+    width: 120mm;
+    height: 120mm;
+    background: radial-gradient(circle at top right, rgba(41,181,232,0.25) 0%, transparent 70%);
+  }
+
+  .cover-snowflake-icon {
+    font-size: 48pt;
+    margin-bottom: 8mm;
+    opacity: 0.9;
+  }
+
+  .cover-title {
+    font-size: 28pt;
+    font-weight: 700;
+    letter-spacing: -0.5pt;
+    margin-bottom: 4mm;
+    line-height: 1.15;
+  }
+
+  .cover-subtitle {
+    font-size: 14pt;
+    font-weight: 300;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 15mm;
+    line-height: 1.4;
+  }
+
+  .cover-meta {
+    font-size: 10pt;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.8;
+  }
+
+  .cover-meta strong {
+    color: rgba(255,255,255,0.95);
+    font-weight: 600;
+  }
+
+  .cover-bar {
+    width: 50mm;
+    height: 1.5mm;
+    background: #29B5E8;
+    margin: 8mm 0;
+    border-radius: 1mm;
+  }
+
+  .cover-footer {
+    position: absolute;
+    bottom: 20mm;
+    left: 30mm;
+    right: 30mm;
+    font-size: 8pt;
+    color: rgba(255,255,255,0.45);
+    border-top: 0.5pt solid rgba(255,255,255,0.15);
+    padding-top: 4mm;
+  }
+
+  /* ---- TABLE OF CONTENTS ---- */
+  .toc {
+    page-break-after: always;
+    padding-top: 15mm;
+  }
+
+  .toc h2 {
+    font-size: 18pt;
+    color: #11567F;
+    border-bottom: 2pt solid #29B5E8;
+    padding-bottom: 3mm;
+    margin-bottom: 8mm;
+  }
+
+  .toc-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 2.5mm 0;
+    border-bottom: 0.5pt dotted #B8D4E8;
+    font-size: 10pt;
+  }
+
+  .toc-item .toc-num {
+    color: #29B5E8;
+    font-weight: 700;
+    margin-right: 3mm;
+    min-width: 8mm;
+  }
+
+  .toc-item .toc-label {
+    flex: 1;
+    color: #1B2A3D;
+  }
+
+  /* ---- SECTION HEADERS ---- */
+  .section {
+    page-break-before: auto;
+    margin-top: 10mm;
+  }
+
+  .section-header {
+    background: linear-gradient(90deg, #11567F 0%, #29B5E8 100%);
+    color: #FFFFFF;
+    padding: 4mm 6mm;
+    border-radius: 2mm;
+    margin-bottom: 6mm;
+    page-break-after: avoid;
+  }
+
+  .section-header h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    letter-spacing: 0.3pt;
+  }
+
+  .section-header .section-num {
+    font-size: 9pt;
+    font-weight: 400;
+    opacity: 0.8;
+  }
+
+  h3 {
+    font-size: 11pt;
+    color: #11567F;
+    margin: 5mm 0 2mm 0;
+    padding-bottom: 1.5mm;
+    border-bottom: 0.75pt solid #B8D4E8;
+    page-break-after: avoid;
+  }
+
+  h4 {
+    font-size: 9.5pt;
+    color: #29B5E8;
+    font-weight: 700;
+    margin: 3mm 0 1.5mm 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
+    page-break-after: avoid;
+  }
+
+  /* ---- TABLES ---- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 3mm 0 5mm 0;
+    font-size: 8.5pt;
+    page-break-inside: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  th {
+    background: #11567F;
+    color: #FFFFFF;
+    font-weight: 600;
+    text-align: left;
+    padding: 2.5mm 3mm;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3pt;
+  }
+
+  td {
+    padding: 2mm 3mm;
+    border-bottom: 0.5pt solid #D8E6F0;
+    vertical-align: top;
+  }
+
+  tr:nth-child(even) td {
+    background: #E8F4FD;
+  }
+
+  tr:hover td {
+    background: #D4ECFA;
+  }
+
+  /* ---- PRIORITY BADGES ---- */
+  .badge {
+    display: inline-block;
+    padding: 1mm 3mm;
+    border-radius: 1.5mm;
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3pt;
+  }
+
+  .badge-high {
+    background: #E53E3E;
+    color: #FFFFFF;
+  }
+
+  .badge-medium {
+    background: #ED8936;
+    color: #FFFFFF;
+  }
+
+  .badge-low {
+    background: #48BB78;
+    color: #FFFFFF;
+  }
+
+  .badge-adopted {
+    background: #48BB78;
+    color: #FFFFFF;
+  }
+
+  .badge-partial {
+    background: #ED8936;
+    color: #FFFFFF;
+  }
+
+  .badge-gap {
+    background: #E53E3E;
+    color: #FFFFFF;
+  }
+
+  /* ---- STATUS ICONS ---- */
+  .status-adopted::before { content: "■ "; color: #48BB78; }
+  .status-partial::before { content: "■ "; color: #ED8936; }
+  .status-gap::before     { content: "■ "; color: #E53E3E; }
+
+  /* ---- MATURITY METER ---- */
+  .maturity-bar {
+    display: inline-block;
+    width: 60mm;
+    height: 3mm;
+    background: #E2E8F0;
+    border-radius: 1.5mm;
+    overflow: hidden;
+    vertical-align: middle;
+    margin-left: 2mm;
+  }
+
+  .maturity-fill {
+    height: 100%;
+    border-radius: 1.5mm;
+    background: linear-gradient(90deg, #29B5E8 0%, #11567F 100%);
+  }
+
+  /* ---- KEY-VALUE PAIRS ---- */
+  .kv-grid {
+    display: grid;
+    grid-template-columns: 45mm 1fr;
+    gap: 1.5mm 3mm;
+    margin: 3mm 0 5mm 0;
+  }
+
+  .kv-label {
+    font-weight: 600;
+    color: #11567F;
+    font-size: 9pt;
+  }
+
+  .kv-value {
+    font-size: 9pt;
+    color: #1B2A3D;
+  }
+
+  /* ---- CALLOUT BOXES ---- */
+  .callout {
+    background: #E8F4FD;
+    border-left: 3pt solid #29B5E8;
+    padding: 3mm 5mm;
+    margin: 3mm 0;
+    border-radius: 0 2mm 2mm 0;
+    font-size: 9pt;
+  }
+
+  .callout-warning {
+    background: #FFF5F5;
+    border-left-color: #E53E3E;
+  }
+
+  .callout-success {
+    background: #F0FFF4;
+    border-left-color: #48BB78;
+  }
+
+  .callout strong {
+    color: #11567F;
+  }
+
+  /* ---- LISTS ---- */
+  ul, ol {
+    margin: 2mm 0 3mm 6mm;
+    font-size: 9pt;
+  }
+
+  li {
+    margin-bottom: 1.5mm;
+  }
+
+  li::marker {
+    color: #29B5E8;
+    font-weight: 700;
+  }
+
+  /* ---- SCORE CARD ---- */
+  .score-card {
+    background: linear-gradient(135deg, #11567F 0%, #0D2B45 100%);
+    color: #FFFFFF;
+    padding: 5mm 6mm;
+    border-radius: 3mm;
+    margin: 4mm 0;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+  }
+
+  .score-card .score-item .score-num {
+    font-size: 22pt;
+    font-weight: 700;
+    color: #29B5E8;
+    display: block;
+  }
+
+  .score-card .score-item .score-label {
+    font-size: 7.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
+    opacity: 0.8;
+  }
+
+  /* ---- ENGAGEMENT BOX ---- */
+  .engagement-box {
+    background: #F7FAFC;
+    border: 1pt solid #B8D4E8;
+    border-radius: 2mm;
+    padding: 4mm 5mm;
+    margin: 3mm 0;
+  }
+
+  .engagement-box h4 {
+    margin-top: 0;
+  }
+
+  /* ---- SOURCES ---- */
+  .sources {
+    margin-top: 8mm;
+    padding-top: 4mm;
+    border-top: 1pt solid #B8D4E8;
+    font-size: 7.5pt;
+    color: #6B7B8D;
+  }
+
+  .sources a {
+    color: #00A1D9;
+    text-decoration: none;
+  }
+
+  /* ---- UTILITY ---- */
+  .text-muted { color: #6B7B8D; }
+  .text-accent { color: #29B5E8; }
+  .text-dark { color: #11567F; }
+  .text-bold { font-weight: 700; }
+  .text-small { font-size: 8pt; }
+  .mt-2 { margin-top: 2mm; }
+  .mt-4 { margin-top: 4mm; }
+  .mb-2 { margin-bottom: 2mm; }
+  .mb-4 { margin-bottom: 4mm; }
+  .page-break { page-break-before: always; }
+
+  p {
+    margin: 1.5mm 0;
+  }
+
+  a {
+    color: #00A1D9;
+    text-decoration: none;
+  }
+
+  strong {
+    color: #11567F;
+  }
+
+  hr {
+    border: none;
+    border-top: 0.5pt solid #B8D4E8;
+    margin: 4mm 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     COVER PAGE
+     ============================================================ -->
+<div class="cover-page">
+  <div class="cover-snowflake-icon">&#10052;</div>
+  <div class="cover-title">Snowflake Use-Case Driven<br>Prospecting Plan</div>
+  <div class="cover-bar"></div>
+  <div class="cover-subtitle">{{ company_name }}</div>
+  <div class="cover-meta">
+    <strong>Report Date:</strong> {{ report_date }}<br>
+    <strong>Prepared For:</strong> {{ prepared_for }}<br>
+    <strong>Industry:</strong> {{ industry }}<br>
+    <strong>Geography:</strong> {{ geography }}<br>
+    <strong>Relationship:</strong> {{ relationship }}
+  </div>
+  <div class="cover-footer">
+    Snowflake AI &amp; Data Cloud &mdash; Confidential Account Intelligence
+  </div>
+</div>
+
+<!-- ============================================================
+     TABLE OF CONTENTS
+     ============================================================ -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <div class="toc-item"><span class="toc-num">01</span><span class="toc-label">Executive Summary</span></div>
+  <div class="toc-item"><span class="toc-num">02</span><span class="toc-label">Key Stakeholders &amp; Decision Makers</span></div>
+  <div class="toc-item"><span class="toc-num">03</span><span class="toc-label">Financial &amp; Business Overview</span></div>
+  <div class="toc-item"><span class="toc-num">04</span><span class="toc-label">Digital, Data &amp; AI Maturity</span></div>
+  <div class="toc-item"><span class="toc-num">05</span><span class="toc-label">Technology &amp; Platform Landscape</span></div>
+  <div class="toc-item"><span class="toc-num">06</span><span class="toc-label">External Signals &amp; Market Intelligence</span></div>
+  <div class="toc-item"><span class="toc-num">07</span><span class="toc-label">Competitive Landscape</span></div>
+  <div class="toc-item"><span class="toc-num">08</span><span class="toc-label">Key Issues, Risks &amp; Challenges</span></div>
+  <div class="toc-item"><span class="toc-num">09</span><span class="toc-label">Strategic Initiatives &amp; Priorities</span></div>
+  <div class="toc-item"><span class="toc-num">10</span><span class="toc-label">Snowflake Use-Case Opportunities</span></div>
+  <div class="toc-item"><span class="toc-num">11</span><span class="toc-label">Recommended Engagement Strategy</span></div>
+  <div class="toc-item"><span class="toc-num">12</span><span class="toc-label">Next Steps &amp; Call to Action</span></div>
+</div>
+
+<!-- ============================================================
+     SECTIONS — Populated by Jinja2 from report_data
+     ============================================================ -->
+
+<!-- 01. EXECUTIVE SUMMARY -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 01</div>
+    <h2>Executive Summary</h2>
+  </div>
+  <div class="kv-grid">
+    <span class="kv-label">Company</span><span class="kv-value">{{ company_name }}</span>
+    <span class="kv-label">Industry</span><span class="kv-value">{{ industry }}</span>
+    <span class="kv-label">Revenue</span><span class="kv-value">{{ executive_summary.revenue | default('—') }}</span>
+    <span class="kv-label">Employees</span><span class="kv-value">{{ executive_summary.employees | default('—') }}</span>
+    <span class="kv-label">HQ</span><span class="kv-value">{{ geography }}</span>
+    <span class="kv-label">Snowflake Status</span><span class="kv-value">{{ relationship }}</span>
+  </div>
+  <div class="callout">
+    <strong>Key Finding:</strong> {{ executive_summary.key_finding | default('—') }}
+  </div>
+  {% if executive_summary.top_opportunities %}
+  <h4>Top Opportunities</h4>
+  <ol>
+    {% for opp in executive_summary.top_opportunities %}
+    <li><strong>{{ opp.name }}</strong> — <span class="badge badge-{{ opp.priority | lower }}">{{ opp.priority }}</span></li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+  {% if executive_summary.maturity %}
+  <h4>Maturity Overview</h4>
+  <div class="kv-grid">
+    {% for dim, level in executive_summary.maturity.items() %}
+    <span class="kv-label">{{ dim }}</span><span class="kv-value">{{ level }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<!-- 02. KEY STAKEHOLDERS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 02</div>
+    <h2>Key Stakeholders &amp; Decision Makers</h2>
+  </div>
+  {% for group_name, stakeholders in stakeholder_groups.items() %}
+  <h4>{{ group_name }}</h4>
+  {% if stakeholders %}
+  <table>
+    <thead><tr><th>Name</th><th>Title</th><th>Alignment</th><th>Notes</th></tr></thead>
+    <tbody>
+      {% for s in stakeholders %}
+      <tr>
+        <td><strong>{{ s.name }}</strong></td>
+        <td>{{ s.title }}</td>
+        <td>{{ s.alignment | default('—') }}</td>
+        <td>{{ s.notes | default('—') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-muted">No data available — requires direct discovery.</p>
+  {% endif %}
+  {% endfor %}
+  {% if org_insights %}
+  <h4>Org Insights</h4>
+  <ul>
+    {% for insight in org_insights %}
+    <li>{{ insight }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+<!-- 03. FINANCIAL & BUSINESS OVERVIEW -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 03</div>
+    <h2>Financial &amp; Business Overview</h2>
+  </div>
+  <div class="kv-grid">
+    <span class="kv-label">Revenue</span><span class="kv-value">{{ financials.revenue | default('—') }}</span>
+    <span class="kv-label">Growth</span><span class="kv-value">{{ financials.growth | default('—') }}</span>
+    <span class="kv-label">Profitability</span><span class="kv-value">{{ financials.profitability | default('—') }}</span>
+    <span class="kv-label">Key Segments</span><span class="kv-value">{{ financials.segments | default('—') }}</span>
+  </div>
+  {% if financials.highlights %}
+  <h4>Recent Financial Highlights</h4>
+  <ul>
+    {% for h in financials.highlights %}
+    <li>{{ h }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if financials.investments %}
+  <h4>Strategic Investments</h4>
+  <ul>
+    {% for inv in financials.investments %}
+    <li>{{ inv }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+<!-- 04. DIGITAL, DATA & AI MATURITY -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 04</div>
+    <h2>Digital, Data &amp; AI Maturity</h2>
+  </div>
+  {% if maturity_scores %}
+  <table>
+    <thead><tr><th>Dimension</th><th>Maturity Level</th><th>Evidence</th></tr></thead>
+    <tbody>
+      {% for m in maturity_scores %}
+      <tr>
+        <td><strong>{{ m.dimension }}</strong></td>
+        <td>{{ m.level }}</td>
+        <td>{{ m.evidence | default('—') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% if maturity_findings %}
+  <h4>Key Findings</h4>
+  <ul>
+    {% for f in maturity_findings %}
+    <li>{{ f }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if maturity_gaps %}
+  <h4>Maturity Gaps (Snowflake Relevant)</h4>
+  <ul>
+    {% for g in maturity_gaps %}
+    <li>{{ g }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+<!-- 05. TECHNOLOGY & PLATFORM LANDSCAPE -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 05</div>
+    <h2>Technology &amp; Platform Landscape</h2>
+  </div>
+  {% if tech_landscape %}
+  <table>
+    <thead><tr><th>Category</th><th>Current Tools / Vendors</th><th>Snowflake Opportunity</th></tr></thead>
+    <tbody>
+      {% for t in tech_landscape %}
+      <tr>
+        <td><strong>{{ t.category }}</strong></td>
+        <td>{{ t.current | default('—') }}</td>
+        <td>{{ t.opportunity | default('—') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% if vendor_relationships %}
+  <h4>Key Vendor Relationships</h4>
+  <ul>
+    {% for v in vendor_relationships %}
+    <li>{{ v }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+<!-- 06. EXTERNAL SIGNALS & MARKET INTELLIGENCE -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 06</div>
+    <h2>External Signals &amp; Market Intelligence</h2>
+  </div>
+  {% if announcements %}
+  <h4>Recent Announcements</h4>
+  <ul>
+    {% for a in announcements %}
+    <li>{{ a }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if analyst_coverage %}
+  <h4>Analyst Coverage</h4>
+  <ul>
+    {% for ac in analyst_coverage %}
+    <li>{{ ac }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if industry_trends %}
+  <h4>Industry Trends Impacting This Account</h4>
+  <ul>
+    {% for t in industry_trends %}
+    <li>{{ t }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if partnerships %}
+  <h4>Partnerships &amp; Acquisitions</h4>
+  <ul>
+    {% for p in partnerships %}
+    <li>{{ p }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+<!-- 07. COMPETITIVE LANDSCAPE -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 07</div>
+    <h2>Competitive Landscape</h2>
+  </div>
+  {% if competitors %}
+  <h4>Primary Competitors</h4>
+  <table>
+    <thead><tr><th>Competitor</th><th>Positioning</th><th>Data/AI Maturity</th><th>Threat Level</th></tr></thead>
+    <tbody>
+      {% for c in competitors %}
+      <tr>
+        <td><strong>{{ c.name }}</strong></td>
+        <td>{{ c.positioning | default('—') }}</td>
+        <td>{{ c.maturity | default('—') }}</td>
+        <td><span class="badge badge-{{ c.threat | lower }}">{{ c.threat }}</span></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% if competitive_pressures %}
+  <h4>Competitive Pressures Driving Technology Investment</h4>
+  <ul>
+    {% for p in competitive_pressures %}
+    <li>{{ p }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% if differentiation %}
+  <h4>Differentiation Strategy</h4>
+  <ul>
+    {% for d in differentiation %}
+    <li>{{ d }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+
+<!-- 08. KEY ISSUES, RISKS & CHALLENGES -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 08</div>
+    <h2>Key Issues, Risks &amp; Challenges</h2>
+  </div>
+  {% if risks %}
+  <table>
+    <thead><tr><th>Issue</th><th>Category</th><th>Snowflake Mitigation</th></tr></thead>
+    <tbody>
+      {% for r in risks %}
+      <tr>
+        <td>{{ r.issue }}</td>
+        <td>{{ r.category | default('—') }}</td>
+        <td>{{ r.mitigation | default('—') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+
+<!-- 09. STRATEGIC INITIATIVES & PRIORITIES -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 09</div>
+    <h2>Strategic Initiatives &amp; Priorities</h2>
+  </div>
+  {% if initiatives %}
+  <table>
+    <thead><tr><th>Initiative</th><th>Status</th><th>Business Outcome</th><th>Snowflake Alignment</th></tr></thead>
+    <tbody>
+      {% for i in initiatives %}
+      <tr>
+        <td><strong>{{ i.initiative }}</strong></td>
+        <td>{{ i.status | default('—') }}</td>
+        <td>{{ i.outcome | default('—') }}</td>
+        <td>{{ i.alignment | default('—') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+
+<!-- 10. SNOWFLAKE USE-CASE OPPORTUNITIES -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">Section 10</div>
+    <h2>Snowflake Use-Case Opportunities</h2>
+  </div>
+
+  {% for priority_level in ['HIGH', 'MEDIUM', 'LOW'] %}
+  {% set opps = opportunities | selectattr('priority', 'equalto', priority_level) | list %}
+  {% if opps %}
+  <h4>{{ priority_level }} Priority</h4>
+  <table>
+    <thead><tr><th>#</th><th>Use Case</th><th>Snowflake Capabilities</th><th>Business Impact</th><th>Data Readiness</th><th>Score</th></tr></thead>
+    <tbody>
+      {% for o in opps %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td><strong>{{ o.use_case }}</strong></td>
+        <td>{{ o.capabilities | default('—') }}</td>
+        <td>{{ o.impact | default('—') }}</td>
+        <td>{{ o.readiness | default('—') }}</td>
+        <td><strong>{{ o.score | default('—') }}</strong></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% endfor %}
+</div>
+
+<!-- 11. RECOMMENDED ENGAGEMENT STRATEGY -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 11</div>
+    <h2>Recommended Engagement Strategy</h2>
+  </div>
+  {% if engagement %}
+  <div class="engagement-box">
+    <h4>Primary Entry Point</h4>
+    <p>{{ engagement.entry_point | default('—') }}</p>
+  </div>
+  <div class="engagement-box">
+    <h4>Lead Use Case</h4>
+    <p>{{ engagement.lead_use_case | default('—') }}</p>
+  </div>
+  <div class="engagement-box">
+    <h4>Proof of Concept Suggestion</h4>
+    <p>{{ engagement.poc | default('—') }}</p>
+  </div>
+  {% if engagement.key_messages %}
+  <h4>Key Messages</h4>
+  <ol>
+    {% for m in engagement.key_messages %}
+    <li>{{ m }}</li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+  {% if engagement.objections %}
+  <h4>Potential Objections &amp; Responses</h4>
+  <table>
+    <thead><tr><th>Objection</th><th>Response</th></tr></thead>
+    <tbody>
+      {% for obj in engagement.objections %}
+      <tr>
+        <td>{{ obj.objection }}</td>
+        <td>{{ obj.response }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+  {% endif %}
+</div>
+
+<!-- 12. NEXT STEPS -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">Section 12</div>
+    <h2>Next Steps &amp; Call to Action</h2>
+  </div>
+  {% if next_steps %}
+  <ol>
+    {% for step in next_steps %}
+    <li>{{ step }}</li>
+    {% endfor %}
+  </ol>
+  {% endif %}
+</div>
+
+<!-- SOURCES -->
+{% if sources %}
+<div class="sources">
+  <h4>Sources</h4>
+  <ul>
+    {% for src in sources %}
+    <li>{{ src }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+[project]
+name = "snowflake-prospecting-plan"
+version = "0.1.0"
+description = "PDF report generation for Snowflake prospecting plans with branded Snowflake theme"
+requires-python = ">=3.11"
+dependencies = [
+    "weasyprint>=62.0",
+    "jinja2>=3.1.0",
+    "markdown>=3.6",
+]
